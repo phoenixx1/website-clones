@@ -1,14 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import db from "../firebase";
 
 function Detail() {
+  const { id } = useParams();
+  const [detailData, setDetailData] = useState({});
+
+  useEffect(() => {
+    db.collection("movies")
+      .doc(id)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setDetailData(doc.data());
+        } else {
+          console.log("No such document in firebase");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document: ", error);
+      });
+  }, [id]);
+
   return (
     <Container>
       <Background>
-        <img alt="" src="" />
+        <img alt={detailData.title} src={detailData.backgroundImg} />
       </Background>
       <ImageTitle>
-        <img alt="" src="" />
+        <img alt={detailData.title} src={detailData.titleImg} />
       </ImageTitle>
       <ContentMeta>
         <Controls>
@@ -25,9 +46,13 @@ function Detail() {
             <span />
           </AddList>
           <GroupWatch>
-            <img src="/images/group-icon.png" alt="" />
+            <div>
+              <img src="/images/group-icon.png" alt="" />
+            </div>
           </GroupWatch>
         </Controls>
+        <Subtitle>{detailData.subTitle}</Subtitle>
+        <Description>{detailData.description}</Description>
       </ContentMeta>
     </Container>
   );
@@ -164,4 +189,44 @@ const AddList = styled.div`
   }
 `;
 
-const GroupWatch = styled.div``;
+const GroupWatch = styled.div`
+  height: 44px;
+  width: 44px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background: white;
+
+  div {
+    height: 40px;
+    width: 40px;
+    background: rgb(0, 0, 0);
+    border-radius: 50%;
+    img {
+      width: 100%;
+    }
+  }
+`;
+
+const Subtitle = styled.div`
+  color: rgb(249, 249, 249);
+  font-size: 15px;
+  min-height: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+`;
+
+const Description = styled.div`
+  line-height: 1.4;
+  font-size: 20px;
+  padding: 16px 0px;
+  color: rgb(249, 249, 249);
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
