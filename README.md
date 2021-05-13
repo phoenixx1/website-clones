@@ -1,3 +1,15 @@
+Google Clone with Search Functionality using Google Search API  
+[Deployed on Firebase](https://clone-f640d.web.app/)
+
+Get google search key from this page (API_KEY): [Programmable Search Engine](https://developers.google.com/custom-search/v1/introduction#identify_your_application_to_google_with_api_key)
+
+Programmable Search for getting (CONTEXT_KEY)  
+Go to this [link](https://cse.google.com/cse/create/new).  
+Enter www.google.com and click create.  
+On left panel click on Setup in Edit search engine.  
+Go down and turn on **Search the entire web**.  
+And copy the search engine ID.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

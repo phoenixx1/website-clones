@@ -2,38 +2,65 @@ import { Button } from "@material-ui/core";
 import { Mic } from "@material-ui/icons";
 import SearchIcon from "@material-ui/icons/Search";
 import React, { useState } from "react";
+import { useHistory } from "react-router";
 import styled from "styled-components";
+import { actionTypes } from "../reducer";
+import { useStateValue } from "../StateProvider";
 
-function Search() {
+function Search({ hideButtons = false }) {
+  const [{}, dispatch] = useStateValue();
+
   const [input, setInput] = useState("");
+  const history = useHistory();
 
   const search = (e) => {
     e.preventDefault();
-    console.log(input);
+    dispatch({
+      type: actionTypes.SET_SEARCH_TERM,
+      term: input,
+    });
+
+    history.push("/search");
   };
 
   return (
     <SearchContainer>
-      <SearchInput>
+      <SearchInput classes={{ root: "searchInput" }} className="searchInput">
         <SearchIcon style={{ color: "gray" }} />
         <input value={input} onChange={(e) => setInput(e.target.value)} />
         <Mic />
       </SearchInput>
-      <SearchButtons>
-        <Button onClick={search} variant="outlined">
-          Google Search
-        </Button>
-        <Button variant="outlined">I'm feeling Lucky</Button>
-      </SearchButtons>
+      {!hideButtons ? (
+        <SearchButtons>
+          <Button type="submit" onClick={search} variant="outlined">
+            Google Search
+          </Button>
+          <Button variant="outlined">I'm feeling Lucky</Button>
+        </SearchButtons>
+      ) : (
+        <SearchButtons>
+          <Button
+            className="hidden"
+            type="submit"
+            onClick={search}
+            variant="outlined"
+          >
+            Google Search
+          </Button>
+          <Button className="hidden" variant="outlined">
+            I'm feeling Lucky
+          </Button>
+        </SearchButtons>
+      )}
     </SearchContainer>
   );
 }
 
 export default Search;
 
-const SearchContainer = styled.div``;
+const SearchContainer = styled.form``;
 
-const SearchInput = styled.div`
+export const SearchInput = styled.div`
   display: flex;
   align-items: center;
   border: 1px solid lightgray;
@@ -76,5 +103,8 @@ const SearchButtons = styled.div`
       border: 1px solid #c6c6c6;
       color: #222;
     }
+  }
+  .hidden {
+    display: none !important;
   }
 `;
