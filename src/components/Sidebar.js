@@ -9,15 +9,14 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
+import { useStateValue } from "../api/StateProvider";
 import SidebarRow from "./SidebarRow";
 
 function Sidebar() {
+  const [{ user }, dispatch] = useStateValue();
   return (
     <SidebarContainer>
-      <SidebarRow
-        title="Phoenix"
-        src="https://avatars.githubusercontent.com/u/44865935?s=400&u=bbaf3eb9e546a7c4869571947b2a214ff4705fd6&v=4"
-      />
+      <SidebarRow title={user.displayName} src={user.photoURL} />
       <SidebarRow title="COVID-19 Information Center" Icon={LocalHospital} />
       <SidebarRow title="Pages" Icon={EmojiFlags} />
       <SidebarRow title="Friends" Icon={People} />

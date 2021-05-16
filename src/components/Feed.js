@@ -1,28 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import db from "../firebase";
 import MessageSender from "./MessageSender";
 import Post from "./Post";
 import StoryReel from "./StoryReel";
 
 function Feed() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) =>
+        setPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+          }))
+        )
+      );
+  });
   return (
     <FeedContainer>
       <StoryReel />
       <MessageSender />
 
-      <Post
-        profilePic="https://avatars.githubusercontent.com/u/44865935?v=4"
-        message="Shut Up"
-        timestamp="Bekar Time"
-        username="Phoenixx1"
-        image="https://cdn.coingape.com/wp-content/uploads/2021/02/07192013/Cardano-ADA-Ripple-XRP.jpg"
-      />
-      <Post
-        profilePic="https://avatars.githubusercontent.com/u/44865935?v=4"
-        message="Shut Up"
-        timestamp="Bekar Time"
-        username="Phoenixx1"
-      />
+      {posts.map((post) => (
+        <Post
+          key={post.id}
+          profilePic={post.data.profilePic}
+          message={post.data.message}
+          timestamp={post.data.timestamp}
+          username={post.data.username}
+          image={post.data.image}
+        />
+      ))}
     </FeedContainer>
   );
 }
