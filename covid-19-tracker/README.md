@@ -1,3 +1,7 @@
+## Get the COVID-19 Data
+
+To get the data go the website https://disease.sh/ and get your data according to your requirements by going to [docs](https://disease.sh/docs/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
