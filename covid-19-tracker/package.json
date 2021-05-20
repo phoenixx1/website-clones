@@ -4,14 +4,17 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.4",
+    "@react-leaflet/core": ">=1.0.0 <1.1.0 || ^1.1.1",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "chart.js": "^3.2.1",
+    "leaflet": "^1.7.1",
     "numeral": "^2.0.6",
     "react": "^17.0.2",
     "react-chartjs-2": "^3.0.3",
     "react-dom": "^17.0.2",
+    "react-leaflet": ">=3.1.0 <3.2.0 || ^3.2.1",
     "react-scripts": "4.0.3",
     "styled-components": "^5.3.0",
     "web-vitals": "^1.1.2"
