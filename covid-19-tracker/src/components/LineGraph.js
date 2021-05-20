@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import { Line } from "react-chartjs-2";
 import numeral from "numeral";
 
 const options = {
-  legend: {
-    display: false,
-  },
   elements: {
     point: {
       radius: 0,
@@ -37,26 +33,25 @@ const options = {
         gridLines: {
           display: false,
         },
-        ticks: {
-          callback: function (value, index, values) {
-            return numeral(value).format("0a");
-          },
-        },
+        // ticks: {
+        //   callback: function (value, index, values) {
+        //     return numeral(value).format("0a");
+        //   },
+        // },
       },
     ],
   },
 };
 
-function LineGraph() {
+function LineGraph({ casesType = "cases" }) {
   const [data, setData] = useState({});
 
-  const buildChartData = (data, casesType = "cases") => {
-    const chartData = [];
+  const buildChartData = (data, casesType) => {
+    let chartData = [];
     let lastDataPoint;
-
     for (let date in data.cases) {
       if (lastDataPoint) {
-        const newDataPoint = {
+        let newDataPoint = {
           x: date,
           y: data[casesType][date] - lastDataPoint,
         };
@@ -64,37 +59,43 @@ function LineGraph() {
       }
       lastDataPoint = data[casesType][date];
     }
-
     return chartData;
   };
 
   useEffect(() => {
-    fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=120")
-      .then((response) => response.json())
-      .then((data) => {
-        const chartData = buildChartData(data, "cases");
-        setData(chartData);
-      });
-  }, []);
+    const fetchData = async () => {
+      await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=120")
+        .then((response) => response.json())
+        .then((data) => {
+          let chartData = buildChartData(data, casesType);
+          setData(chartData);
+          console.log(chartData);
+        });
+    };
+
+    fetchData();
+  }, [casesType]);
 
   return (
-    <LineGraphContainer>
-      <Line
-        data={{
-          datasets: [
-            {
-              backgroundColor: "rgba(204,16,52,0.7)",
-              borderColor: "#CC1034",
-              data: data,
-            },
-          ],
-        }}
-        options
-      />
-    </LineGraphContainer>
+    <div>
+      {data?.length > 0 && (
+        <Line
+          data={{
+            datasets: [
+              {
+                backgroundColor: "rgba(204, 16, 52, 0.5)",
+                borderColor: "#CC1034",
+                data: data,
+                fill: true,
+                label: `# of ${casesType}`,
+              },
+            ],
+          }}
+          options={options}
+        />
+      )}
+    </div>
   );
 }
 
 export default LineGraph;
-
-const LineGraphContainer = styled.div``;
