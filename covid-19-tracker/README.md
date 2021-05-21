@@ -4,6 +4,8 @@ To get the data go the website https://disease.sh/ and get your data according t
 
 If you are building this project from scratch you might face error with react-leaflet to fix the problem refer to this [link](https://exerror.com/failed-to-compile-node_modules-react-leaflet-core-esm-path-js-1041-module-parse-failed-unexpected-token-1041/)
 
+Also another error if you use react-leaflet that it does not auto-refresh when type of cases is change, then you need to install the older version, or you can do a bit of research to what changes in code are necessary to enable that functionality. (If you change this, then the above problem might not occur to you)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
