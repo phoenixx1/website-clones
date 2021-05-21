@@ -1,3 +1,5 @@
+## Deployed on Firebase [COVID-19 Tracker](https://covid-19-tracker-f6549.web.app/)
+
 ## Get the COVID-19 Data
 
 To get the data go the website https://disease.sh/ and get your data according to your requirements by going to [docs](https://disease.sh/docs/)

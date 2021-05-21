@@ -11,17 +11,20 @@ import { useEffect, useState } from "react";
 import InfoBox from "./components/InfoBox";
 import Map from "./components/Map";
 import Table from "./components/Table";
-import { sortData } from "./util";
+import { prettyPrintStat, sortData } from "./util";
 import LineGraph from "./components/LineGraph";
 import "leaflet/dist/leaflet.css";
+import numeral from "numeral";
 
 function App() {
-  const [countries, setCountires] = useState([]);
+  const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState("Worldwide");
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
   const [mapZoom, setMapZoom] = useState(3);
+  const [casesType, setCasesType] = useState("cases");
+  const [mapCountries, setMapCountries] = useState([]);
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -33,18 +36,20 @@ function App() {
 
   useEffect(() => {
     const getCountriesData = async () => {
-      await fetch("https://disease.sh/v3/covid-19/countries")
+      fetch("https://disease.sh/v3/covid-19/countries")
         .then((response) => response.json())
         .then((data) => {
           const countries = data.map((country) => ({
             name: country.country,
             value: country.countryInfo.iso2,
           }));
-          const sortedData = sortData(data);
+          let sortedData = sortData(data);
+          setCountries(countries);
+          setMapCountries(data);
           setTableData(sortedData);
-          setCountires(countries);
         });
     };
+
     getCountriesData();
   }, []);
 
@@ -60,7 +65,7 @@ function App() {
       .then((data) => {
         setCountry(countryCode);
         setCountryInfo(data);
-        setMapCenter([data.countryInfo?.lat, data.countryInfo?.long]);
+        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
         setMapZoom(4);
       });
   };
@@ -85,31 +90,46 @@ function App() {
         </AppHeader>
         <AppStats>
           <InfoBox
+            isRed
+            onClick={(e) => setCasesType("cases")}
             title="Coronavirus Cases"
-            cases={countryInfo.todayCases}
-            total={countryInfo.cases}
+            isRed
+            active={casesType === "cases"}
+            cases={prettyPrintStat(countryInfo.todayCases)}
+            total={numeral(countryInfo.cases).format("0.0a")}
           />
           <InfoBox
+            onClick={(e) => setCasesType("recovered")}
             title="Recovered"
-            cases={countryInfo.todayRecovered}
-            total={countryInfo.recovered}
+            active={casesType === "recovered"}
+            cases={prettyPrintStat(countryInfo.todayRecovered)}
+            total={numeral(countryInfo.recovered).format("0.0a")}
           />
           <InfoBox
+            isRed
+            onClick={(e) => setCasesType("deaths")}
             title="Deaths"
-            cases={countryInfo.todayDeaths}
-            total={countryInfo.deaths}
+            isRed
+            active={casesType === "deaths"}
+            cases={prettyPrintStat(countryInfo.todayDeaths)}
+            total={numeral(countryInfo.deaths).format("0.0a")}
           />
         </AppStats>
 
-        <Map center={mapCenter} zoom={mapZoom} />
+        <Map
+          countries={mapCountries}
+          casesType={casesType}
+          center={mapCenter}
+          zoom={mapZoom}
+        />
       </AppLeft>
 
       <AppRight>
         <CardContent>
           <h3>Live Cases by Country</h3>
           <Table countries={tableData} />
-          <h3>Worldwide new Cases</h3>
-          <LineGraph />
+          <h3 className="graph__title">Worldwide new {casesType}</h3>
+          <LineGraph className="app__graph" casesType={casesType} />
         </CardContent>
       </AppRight>
     </AppContainer>
@@ -132,15 +152,38 @@ const AppLeft = styled.div`
   flex: 0.9;
 `;
 
-const AppRight = styled(Card)``;
+const AppRight = styled(Card)`
+  display: flex;
+  flex-direction: column;
 
-const AppDropdown = styled(FormControl)``;
+  .MuiCardContent-root {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .app__graph {
+    flex-grow: 1;
+  }
+  .graph__title {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+`;
+
+const AppDropdown = styled(FormControl)`
+  background: white;
+`;
 
 const AppHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+
+  h1 {
+    color: #fc3c3c;
+    font-size: 2rem;
+  }
 `;
 
 const AppStats = styled.div`
