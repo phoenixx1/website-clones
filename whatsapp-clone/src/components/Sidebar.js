@@ -30,6 +30,8 @@ function Sidebar() {
       </SidebarSearch>
 
       <SidebarChats>
+        <SidebarChat addNewChat />
+        <SidebarChat />
         <SidebarChat />
       </SidebarChats>
     </SidebarContainer>

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Chat from "./components/Chat";
 import Sidebar from "./components/Sidebar";
 
 function App() {
@@ -6,6 +7,7 @@ function App() {
     <AppContainer>
       <AppBody>
         <Sidebar />
+        <Chat />
       </AppBody>
     </AppContainer>
   );
