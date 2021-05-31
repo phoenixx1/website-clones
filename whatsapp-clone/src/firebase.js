@@ -1,4 +1,5 @@
 import firebase from "firebase";
+// Get your firebaseConfig from firebase by creating a new app.
 import firebaseConfig from "./firebaseConfig";
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
